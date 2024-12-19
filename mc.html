@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="JsBarcode.all.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Multiple Codes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        input, button, select {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        img {
+            max-width: 150px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Multiple Codes</h1>
+        <label for="codeType">Select Code Type:</label>
+        <select id="codeType">
+            <option value="code128">Barcode (Code128)</option>
+            <option value="ean13">Barcode (EAN-13)</option>
+            <option value="upc">Barcode (UPC)</option>
+            <option value="code39">Barcode (Code39)</option>
+        </select>
+
+        <label for="prefix">Enter Prefix:</label>
+        <input type="text" id="prefix" placeholder="Prefix (e.g., TEST-)">
+
+        <label for="count">Number of Codes:</label>
+        <input type="number" id="count" min="1" placeholder="Enter number of codes">
+
+        <button onclick="generateMultipleCodes()">Generate</button>
+        <a href="index.html"><button>Back</button></a>
+
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function generateMultipleCodes() {
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+            const codeType = document.getElementById('codeType').value;
+            const prefix = document.getElementById('prefix').value || '';
+            const count = parseInt(document.getElementById('count').value);
+
+            if (!count || count <= 0) {
+                alert('Enter a valid number of codes.');
+                return;
+            }
+
+            let format;
+            switch (codeType) {
+                case 'code128': format = 'CODE128'; break;
+                case 'ean13': format = 'EAN13'; break;
+                case 'upc': format = 'UPC'; break;
+                case 'code39': format = 'CODE39'; break;
+            }
+
+            for (let i = 1; i <= count; i++) {
+                const value = `${prefix}${i}`;
+                const img = document.createElement('img');
+                try {
+                    JsBarcode(img, value, { format: format, lineColor: '#000', width: 2, height: 100 });
+                    output.appendChild(img);
+                } catch (e) {
+                    console.error('Error generating barcode:', e);
+                    alert('Error generating barcode.');
+                    return;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
